@@ -8,7 +8,7 @@ var App = {
 
   username: 'anonymous',
 
-  initialize: function() {
+  initialize: function () {
     App.username = window.location.search.substr(10);
 
     FormView.initialize();
@@ -19,30 +19,33 @@ var App = {
     App.startSpinner();
     App.fetch(App.stopSpinner);
 
-    // TODO: Make sure the app loads data from the API
-    // continually, instead of just once at the start.
+
+    // Poll for new messages every 3 sec
     setInterval(App.fetch, 3000);
   },
 
-  fetch: function(callback = ()=>{}) {
+  fetch: function (callback = () => { }) {
     Parse.readAll((data) => {
-      // examine the response from the server request:
-      //console.log(data);
-      Messages._data = [...data.results];
-      // TODO: Use the data to update Messages and Rooms
-      // and re-render the corresponding views.
-      Rooms.update(data.results, RoomsView.render);
-      MessagesView.render(data.results);
-      callback();
+
+      // Only update if we have messages.
+      console.log(data.results);
+      if (data.results) {
+        Rooms.update(data.results, RoomsView.render);
+        Messages.update(data.results, MessagesView.render);
+
+        callback();
+      }
+      return;
+
     });
   },
 
-  startSpinner: function() {
+  startSpinner: function () {
     App.$spinner.show();
     FormView.setStatus(true);
   },
 
-  stopSpinner: function() {
+  stopSpinner: function () {
     App.$spinner.fadeOut('fast');
     FormView.setStatus(false);
   }
