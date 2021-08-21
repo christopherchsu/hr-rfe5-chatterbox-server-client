@@ -4,37 +4,21 @@
 
 var Messages = {
 
+  // TODO: Define how you want to store your messages.
+  _data: [],
 
-  _data: {},
-
-  items: function() {
-    return _.chain(Object.values(Messages._data)).sortBy('createdAt');
+  // TODO: Define methods which allow you to retrieve from,
+  // add to, and generally interact with the messages.
+  add: function(message) {
+    Messages._data.push(message);
   },
 
-  add: function(message, callback = ()=>{}) {
-    Messages._data[message.message_id] = message;
-    callback(Messages.items());
+  retrieve: function(idx) {
+    return Messages._data[idx];
   },
 
-  update: function(messages, callback = ()=>{}) {
-    var length = Object.keys(Messages._data).length;
-
-    for (let message of messages) {
-      Messages._data[message.message_id] = Messages._conform(message);
-    }
-
-    // only invoke the callback if something changed
-    if (Object.keys(Messages._data).length !== length) {
-      callback(Messages.items());
-    }
+  length: function(idx) {
+    return Messages._data.length;
   },
 
-  _conform: function(message) {
-    // ensure each message object conforms to expected shape
-    message.text = message.text || '';
-    message.username = message.username || '';
-    message.roomname = message.roomname || '';
-    return message;
-  }
-  
 };
